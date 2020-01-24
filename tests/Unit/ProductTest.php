@@ -58,8 +58,35 @@ class ProductTest extends TestCase
         $this->expectException(DuplicateEntryException::class);
 
         $productRepostiroy = new ProductRepository();
-        $productRepostiroy->create($this->testCreationData);
-        $productRepostiroy->create($this->testCreationData);
+        $productService = new ProductService($productRepostiroy);
+        $productService->create($this->testCreationData);
+        $productService->create($this->testCreationData);
+
+
+    }
+
+    public function testGetAProduct(){
+
+        $productRepostiroy = new ProductRepository();
+        $productService = new ProductService($productRepostiroy);
+
+        $createdProduct = $productService->create($this->testCreationData);
+        $findedProduct = $productService->get($createdProduct->id);
+
+        $this->assertEquals($createdProduct->title , $findedProduct->title);
+
+    }
+
+    public function updateAProduct(){
+
+        $productRepostiroy = new ProductRepository();
+        $productService = new ProductService($productRepostiroy);
+
+        $createdProduct = $productService->create($this->testCreationData);
+        $updatedProduct = $productService->update($createdProduct->id,['title'=>'new_title','price'=>200]);
+
+        $this->assertEquals($updatedProduct->title , $createdProduct->title);
+
 
 
     }
