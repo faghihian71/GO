@@ -39,8 +39,8 @@ class ProductTest extends TestCase
     {
 
         $productRepostiroy = new ProductRepository();
-        // Product Service expcets productRepositoryInterface
 
+        // Product Service expcets productRepositoryInterface
         $productService = new ProductService($productRepostiroy);
 
         $productService->create();
