@@ -4,13 +4,14 @@ namespace App\Http\Controllers\Api\Product;
 
 use App\Exceptions\DuplicateEntryException;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ProductResource;
 use App\Http\Resources\ProductStandardJsonResponse;
 use App\Services\Product\ProductServiceInterface;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    private  $productService = null;
+    private $productService = null;
 
     public function __construct(ProductServiceInterface $productService)
     {
@@ -22,9 +23,10 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-
+        $products = $this->productService->list(null,3,null);
+        return  ProductResource::collection($products);
     }
 
     /**
@@ -40,7 +42,7 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -48,21 +50,20 @@ class ProductController extends Controller
         try {
             $createdProduct = $this->productService->create($request->toArray());
 
-            return (new ProductStandardJsonResponse($createdProduct))->response()->setStatusCode(201);
+            return ( new ProductResource($createdProduct))->response()->setStatusCode(201);
 
-        } catch (DuplicateEntryException $ex){
-            return response()->json(['message'=>$ex->getMessage(),'status'=>409,'error_code'=>$ex->getCode()],409);
+        } catch (DuplicateEntryException $ex) {
+            return response()->json(['message' => $ex->getMessage(), 'status' => 409, 'error_code' => $ex->getCode()], 409);
         } catch (\Exception $ex) {
-            return response()->json(['message'=>$ex->getMessage(),'status'=>400,'error_code'=>$ex->getCode()],400);
+            return response()->json(['message' => $ex->getMessage(), 'status' => 400, 'error_code' => $ex->getCode()], 400);
         }
     }
-
 
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -73,7 +74,7 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -84,8 +85,8 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -96,7 +97,7 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

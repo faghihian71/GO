@@ -18,4 +18,6 @@ interface ProductServiceInterface
     public function update($id , $request);
 
     public function get($id);
+
+    public function list($ofsset , $limit , $metaDataSearch);
 }

@@ -55,5 +55,10 @@ class ProductRepository implements ProductRepositoryInterface
         return  Product::where('id',$id)->first();
     }
 
+    public function list($offset, $limit, $metaDataSearch)
+    {
+        return Product::paginate($limit);
+    }
+
 
 }

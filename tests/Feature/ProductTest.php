@@ -17,7 +17,6 @@ class ProductTest extends TestCase
     public function testBasicTest()
     {
         $response = $this->get('/');
-
         $response->assertStatus(200);
     }
 
@@ -42,5 +41,12 @@ class ProductTest extends TestCase
             $this->testCreationData);
         $response->assertStatus(201);
 
+    }
+
+    public function testGetListOfProducts(){
+
+        $response = $this->get('/api/v1/product');
+        $response->assertStatus(200);
+        $response->assertSee("data");
     }
 }

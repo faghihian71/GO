@@ -34,12 +34,16 @@ class ProductService implements ProductServiceInterface
 
     public function update($id, $request)
     {
-        // TODO: Implement update() method.
+        return $this->productServiceRepository->update($id);
     }
 
     public function get($id)
     {
         return $this->productServiceRepository->get($id);
+    }
+
+    public function list($offset , $limit , $metaDataSearch){
+        return $this->productServiceRepository->list($offset , $limit , $metaDataSearch);
     }
 
 }

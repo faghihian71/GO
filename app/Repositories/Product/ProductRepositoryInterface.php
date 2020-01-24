@@ -19,4 +19,5 @@ interface ProductRepositoryInterface
 
     public function get($id);
 
+    public function list($offset , $limit , $metaDataSearch);
 }

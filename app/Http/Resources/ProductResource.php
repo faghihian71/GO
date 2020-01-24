@@ -10,8 +10,9 @@ namespace App\Http\Resources;
 
 
 use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class ProductStandardJsonResponse extends Resource
+class ProductResource extends Resource
 {
     /**
      * Transform the resource into an array.
@@ -22,14 +23,14 @@ class ProductStandardJsonResponse extends Resource
      */
     public function toArray($request)
     {
+
         return [
-            'type'          => 'games',
-            'id'            => (string)$this->id,
-            'attributes'    => [
-                'title' => $this->title,
-                'price' => $this->price,
-            ],
+            'id' => $this->id,
+            'title' => $this->title,
+            'price' => $this->price . ' USD'
         ];
     }
+
+
 
 }
