@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\ProductStandardJsonResponse;
 use App\Services\Product\ProductServiceInterface;
+use \Illuminate\Http\Response;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ProductController extends Controller
 {
@@ -25,8 +27,8 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $products = $this->productService->list(null,3,null);
-        return  ProductResource::collection($products);
+        $products = $this->productService->list(null, 3, null);
+        return ProductResource::collection($products);
     }
 
     /**
@@ -49,13 +51,24 @@ class ProductController extends Controller
     {
         try {
             $createdProduct = $this->productService->create($request->toArray());
-
-            return ( new ProductResource($createdProduct))->response()->setStatusCode(201);
+            return (new ProductResource($createdProduct))
+                ->response()
+                ->setStatusCode(Response::HTTP_CREATED);
 
         } catch (DuplicateEntryException $ex) {
-            return response()->json(['message' => $ex->getMessage(), 'status' => 409, 'error_code' => $ex->getCode()], 409);
+
+            return response()->json([
+                'message' => $ex->getMessage(),
+                'status' => Response::HTTP_CONFLICT,
+                'error_code' => $ex->getCode()
+            ], Response::HTTP_CONFLICT);
+
         } catch (\Exception $ex) {
-            return response()->json(['message' => $ex->getMessage(), 'status' => 400, 'error_code' => $ex->getCode()], 400);
+
+            return response()->json([
+                'message' => $ex->getMessage(),
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'error_code' => $ex->getCode()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -91,7 +104,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
     }
 
     /**
@@ -102,6 +115,18 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            if (!$this->productService->remove($id)) {
+                return response()->json([
+                        'message' => 'product not found',
+                        'status' => Response::HTTP_NOT_FOUND,
+                        'error_code' => Response::HTTP_NOT_FOUND]
+                    , Response::HTTP_NOT_FOUND);
+            }
+
+
+        } catch (\Exception $ex) {
+
+        }
     }
 }

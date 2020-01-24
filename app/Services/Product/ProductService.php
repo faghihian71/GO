@@ -29,7 +29,7 @@ class ProductService implements ProductServiceInterface
 
     public function remove($id)
     {
-        $this->productServiceRepository->remove($id);
+        return $this->productServiceRepository->remove($id);
     }
 
     public function update($id, $request)

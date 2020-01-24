@@ -49,4 +49,15 @@ class ProductTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee("data");
     }
+
+    public function testRemoveAProduct(){
+
+        $productRepostiroy = new ProductRepository();
+        $productService = new ProductService($productRepostiroy);
+        $result = $productService->create($this->testCreationData);
+
+
+        $response = $this->delete('/api/v1/product/'.$result->id);
+        $response->assertStatus(200);
+    }
 }
