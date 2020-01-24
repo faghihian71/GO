@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 
+use App\Product;
 use Faker\Generator;
 use Illuminate\Database\Eloquent\Factory;
 use Tests\TestCase;
@@ -18,14 +19,14 @@ class ProductTest extends TestCase
     {
         parent::setUp();
 
-
-        $factory = new Factory();
-        $this->testCreationData = $factory->define(App\Product::class, function (Generator $faker) {
-            return [
+        // make fake data
+        $faker = \Faker\Factory::create();
+        $this->testCreationData = [
                 'title' => $faker->name,
                 'price' => $faker->numberBetween(1,100000)
-            ];
-        });
+        ];
+
+
 
     }
 
