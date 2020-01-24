@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\ProductStandardJsonResponse;
 use App\Services\Product\ProductServiceInterface;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use \Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -31,15 +32,6 @@ class ProductController extends Controller
         return ProductResource::collection($products);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -49,27 +41,13 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        try {
+
             $createdProduct = $this->productService->create($request->toArray());
             return (new ProductResource($createdProduct))
                 ->response()
                 ->setStatusCode(Response::HTTP_CREATED);
 
-        } catch (DuplicateEntryException $ex) {
 
-            return response()->json([
-                'message' => $ex->getMessage(),
-                'status' => Response::HTTP_CONFLICT,
-                'error_code' => $ex->getCode()
-            ], Response::HTTP_CONFLICT);
-
-        } catch (\Exception $ex) {
-
-            return response()->json([
-                'message' => $ex->getMessage(),
-                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
-                'error_code' => $ex->getCode()], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
     }
 
 
@@ -84,16 +62,6 @@ class ProductController extends Controller
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -104,34 +72,9 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        try {
 
-            $updatedProdcut = $this->productService->update($id, $request->toArray());
-            return (new ProductResource($updatedProdcut));
-
-        } catch (DuplicateEntryException $ex) {
-
-            return response()->json([
-                'message' => $ex->getMessage(),
-                'status' => Response::HTTP_CONFLICT,
-                'error_code' => $ex->getCode()
-            ], Response::HTTP_CONFLICT);
-
-        } catch (NotFoundHttpException $ex){
-
-            return response()->json([
-                'message' => $ex->getMessage(),
-                'status' => Response::HTTP_NOT_FOUND,
-                'error_code' => Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
-
-        } catch (\Exception $ex) {
-
-            return response()->json([
-                'message' => $ex->getMessage(),
-                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
-                'error_code' => $ex->getCode()], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-
+        $updatedProdcut = $this->productService->update($id, $request->toArray());
+        return (new ProductResource($updatedProdcut));
 
     }
 
@@ -143,23 +86,9 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        try {
-            if (!$this->productService->remove($id)) {
-                return response()->json([
-                        'message' => 'product not found',
-                        'status' => Response::HTTP_NOT_FOUND,
-                        'error_code' => Response::HTTP_NOT_FOUND]
-                    , Response::HTTP_NOT_FOUND);
-            }
 
+        $this->productService->remove($id);
 
-        } catch (\Exception $ex) {
-
-            return response()->json([
-                'message' => $ex->getMessage(),
-                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
-                'error_code' => $ex->getCode()], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
     }
 
 

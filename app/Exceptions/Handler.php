@@ -3,7 +3,10 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Contracts\Queue\EntityNotFoundException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Response;
 
 class Handler extends ExceptionHandler
 {
@@ -46,6 +49,34 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($request->ajax() || $request->wantsJson())
+        {
+            $json = [
+                'error' => [
+                    'code' => $exception->getCode(),
+                    'message' => $exception->getMessage(),
+                ],
+            ];
+
+            $class = get_class($exception);
+
+            $status_code = 400;
+            switch($class) {
+                case ModelNotFoundException::class:
+                    $status_code = Response::HTTP_NOT_FOUND;
+                    break;
+                case DuplicateEntryException::class:
+                    $status_code = Response::HTTP_CONFLICT;
+                    break;
+
+
+            }
+
+
+            return response()->json($json, $status_code);
+        }
+
+
         return parent::render($request, $exception);
     }
 }

@@ -11,8 +11,11 @@ namespace App\Repositories\Product;
 
 use App\Exceptions\DuplicateEntryException;
 use App\Product;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Translation\Exception\NotFoundResourceException;
 
 
 class ProductRepository implements ProductRepositoryInterface
@@ -32,7 +35,7 @@ class ProductRepository implements ProductRepositoryInterface
 
             if ($errorCode == 1062) {
                 // We change exception cause  should not  depend to low level sql exceptions
-                throw new DuplicateEntryException("Product name exists", 2000);
+                throw new DuplicateEntryException("Product name exists", Response::HTTP_CONFLICT);
             } else {
                 throw  $e;
             }
@@ -41,7 +44,15 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function remove($id)
     {
-        return Product::destroy($id);
+        $findedProduct =  Product::find($id);
+
+        if (!$findedProduct) {
+            throw new ModelNotFoundException("product not found",Response::HTTP_NOT_FOUND);
+        }
+        $findedProduct->delete();
+
+
+
 
     }
 
@@ -51,7 +62,7 @@ class ProductRepository implements ProductRepositoryInterface
             $findedProduct = Product::find($id);
 
             if (!$findedProduct) {
-                throw  new NotFoundHttpException('product not found');
+                throw new ModelNotFoundException("product not found",Response::HTTP_NOT_FOUND);
             }
 
 
@@ -65,7 +76,7 @@ class ProductRepository implements ProductRepositoryInterface
             $errorCode = $e->errorInfo[1];
             if ($errorCode == 1062) {
                 // We change exception cause  should not  depend to low level sql exceptions
-                throw new DuplicateEntryException("Product name exists", 2000);
+                throw new DuplicateEntryException("Product name exists", Response::HTTP_CONFLICT);
             } else {
                 throw  $e;
             }
