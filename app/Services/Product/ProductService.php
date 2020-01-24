@@ -34,7 +34,7 @@ class ProductService implements ProductServiceInterface
 
     public function update($id, $request)
     {
-        return $this->productServiceRepository->update($id);
+        return $this->productServiceRepository->update($id , $request);
     }
 
     public function get($id)

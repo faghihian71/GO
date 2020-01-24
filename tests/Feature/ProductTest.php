@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Repositories\Product\ProductRepository;
+use App\Services\Product\ProductService;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -59,5 +61,20 @@ class ProductTest extends TestCase
 
         $response = $this->delete('/api/v1/product/'.$result->id);
         $response->assertStatus(200);
+    }
+
+    public function testUpdateAProduct(){
+
+        $productRepostiroy = new ProductRepository();
+        $productService = new ProductService($productRepostiroy);
+        $result = $productService->create($this->testCreationData);
+
+        $fakeName = $this->faker->name;
+        $response = $this->put('/api/v1/product/'.$result->id,
+            ['title'=> $fakeName , 'price'=>1000]);
+        $response->assertStatus(200);
+        $response->assertSee($fakeName);
+
+
     }
 }

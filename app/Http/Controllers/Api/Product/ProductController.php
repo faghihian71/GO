@@ -104,6 +104,34 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
+        try {
+
+            $updatedProdcut = $this->productService->update($id, $request->toArray());
+            return (new ProductResource($updatedProdcut));
+
+        } catch (DuplicateEntryException $ex) {
+
+            return response()->json([
+                'message' => $ex->getMessage(),
+                'status' => Response::HTTP_CONFLICT,
+                'error_code' => $ex->getCode()
+            ], Response::HTTP_CONFLICT);
+
+        } catch (NotFoundHttpException $ex){
+
+            return response()->json([
+                'message' => $ex->getMessage(),
+                'status' => Response::HTTP_NOT_FOUND,
+                'error_code' => Response::HTTP_NOT_FOUND], Response::HTTP_NOT_FOUND);
+
+        } catch (\Exception $ex) {
+
+            return response()->json([
+                'message' => $ex->getMessage(),
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'error_code' => $ex->getCode()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
 
     }
 
@@ -127,6 +155,12 @@ class ProductController extends Controller
 
         } catch (\Exception $ex) {
 
+            return response()->json([
+                'message' => $ex->getMessage(),
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'error_code' => $ex->getCode()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+
 }
