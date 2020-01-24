@@ -3,13 +3,13 @@
  * Created by PhpStorm.
  * User: babakfaghihian
  * Date: 1/24/2020 AD
- * Time: 13:07
+ * Time: 13:32
  */
 
-namespace App\Repsitories\Product;
+namespace App\Services\Product;
 
 
-interface ProductRepositoryInterface
+interface ProductServiceInterface
 {
     public function create(array $attributes);
 
@@ -18,5 +18,4 @@ interface ProductRepositoryInterface
     public function update(&$id , $request);
 
     public function get(&$id);
-
 }

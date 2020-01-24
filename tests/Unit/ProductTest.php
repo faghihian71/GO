@@ -4,6 +4,8 @@ namespace Tests\Unit;
 
 
 use App\Product;
+use App\Repsitories\Product\ProductRepository;
+use App\Services\Product\ProductService;
 use Faker\Generator;
 use Illuminate\Database\Eloquent\Factory;
 use Tests\TestCase;
@@ -11,6 +13,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProductTest extends TestCase
 {
+    private $testCreationData;
 
     /**
      *  make global dependencies
@@ -43,7 +46,10 @@ class ProductTest extends TestCase
         // Product Service expcets productRepositoryInterface
         $productService = new ProductService($productRepostiroy);
 
-        $productService->create();
+        $result = $productService->create($this->testCreationData);
+
+
+        $this->assertEquals($result->title , $this->testCreationData['title'] );
 
     }
 

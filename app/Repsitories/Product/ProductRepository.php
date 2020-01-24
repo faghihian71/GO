@@ -9,11 +9,16 @@
 namespace App\Repsitories\Product;
 
 
+use App\Product;
+
 class ProductRepository implements ProductRepositoryInterface
 {
-    public function create($attributes)
+    public function create(array $attributes)
     {
-        // TODO: Implement create() method.
+        $product = new Product();
+        $product->title  = $attributes['title'];
+        $product->price  = $attributes['price'];
+        $product->save();
     }
 
     public function remove($id)
