@@ -38,7 +38,7 @@ class ProductTest extends TestCase
 
     public function testCreateAProduct(){
 
-        $response = $this->post('/api/product',
+        $response = $this->post('/api/v1/product',
             $this->testCreationData);
         $response->assertStatus(201);
 
