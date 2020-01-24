@@ -27,11 +27,9 @@ class ProductTest extends TestCase
         // make fake data
         $this->faker = \Faker\Factory::create();
         $this->testCreationData = [
-                'title' => $this->faker->name,
-                'price' => $this->faker->numberBetween(1,100000)
+            'title' => $this->faker->name,
+            'price' => $this->faker->numberBetween(1, 100000)
         ];
-
-
 
 
     }
@@ -45,18 +43,16 @@ class ProductTest extends TestCase
     {
 
         $productRepostiroy = new ProductRepository();
-
-        // Product Service expcets productRepositoryInterface
         $productService = new ProductService($productRepostiroy);
-
         $result = $productService->create($this->testCreationData);
 
 
-        $this->assertEquals($result->title , $this->testCreationData['title'] );
+        $this->assertEquals($result->title, $this->testCreationData['title']);
 
     }
 
-    public function testCreateProductWithSameName(){
+    public function testCreateProductWithSameName()
+    {
 
 
         $this->expectException(DuplicateEntryException::class);
@@ -65,6 +61,23 @@ class ProductTest extends TestCase
         $productRepostiroy->create($this->testCreationData);
         $productRepostiroy->create($this->testCreationData);
 
+
+    }
+
+
+    public function testRemoveAProduct()
+    {
+
+        $productRepostiroy = new ProductRepository();
+        $productService = new ProductService($productRepostiroy);
+        $result = $productService->create($this->testCreationData);
+
+
+        $productID = $result->id;
+        $productService->remove($productID);
+        $findedProduct = $productService->get($result->id);
+
+        $this->assertEquals($findedProduct , null);
 
 
     }

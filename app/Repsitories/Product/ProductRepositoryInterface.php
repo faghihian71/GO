@@ -15,8 +15,8 @@ interface ProductRepositoryInterface
 
     public function remove($id);
 
-    public function update(&$id , $request);
+    public function update($id , $request);
 
-    public function get(&$id);
+    public function get($id);
 
 }

@@ -39,17 +39,18 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function remove($id)
     {
-        // TODO: Implement remove() method.
+        Product::where('id',$id)->delete();
+
     }
 
-    public function update(&$id, $request)
+    public function update($id, $request)
     {
         // TODO: Implement update() method.
     }
 
-    public function get(&$id)
+    public function get($id)
     {
-        // TODO: Implement get() method.
+        return  Product::where('id',$id)->first();
     }
 
 
