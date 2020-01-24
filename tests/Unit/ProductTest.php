@@ -5,7 +5,7 @@ namespace Tests\Unit;
 
 use App\Exceptions\DuplicateEntryException;
 use App\Product;
-use App\Repsitories\Product\ProductRepository;
+use App\Repositories\Product\ProductRepository;
 use App\Services\Product\ProductService;
 use Faker\Generator;
 use Illuminate\Database\Eloquent\Factory;

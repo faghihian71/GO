@@ -6,7 +6,7 @@
  * Time: 13:10
  */
 
-namespace App\Repsitories\Product;
+namespace App\Repositories\Product;
 
 
 use App\Exceptions\DuplicateEntryException;
@@ -33,6 +33,8 @@ class ProductRepository implements ProductRepositoryInterface
             if ($errorCode == 1062) {
                 // We change exception cause  should not  depend to low level sql exceptions
                 throw new DuplicateEntryException("Product name exists", 2000);
+            } else {
+                throw  $e;
             }
         }
     }

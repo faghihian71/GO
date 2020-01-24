@@ -9,7 +9,7 @@
 namespace App\Services\Product;
 
 
-use App\Repsitories\Product\ProductRepositoryInterface;
+use App\Repositories\Product\ProductRepositoryInterface;
 
 class ProductService implements ProductServiceInterface
 {

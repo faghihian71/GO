@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Api\Product;
 
+use App\Exceptions\DuplicateEntryException;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ProductStandardJsonResponse;
 use App\Services\Product\ProductServiceInterface;
 use Illuminate\Http\Request;
 
@@ -43,8 +45,19 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        return $this->productService->create($request);
+        try {
+            $createdProduct = $this->productService->create($request->toArray());
+
+            return (new ProductStandardJsonResponse($createdProduct))->response()->setStatusCode(201);
+
+        } catch (DuplicateEntryException $ex){
+            return response()->json(['message'=>$ex->getMessage(),'status'=>409,'error_code'=>$ex->getCode()],409);
+        } catch (\Exception $ex) {
+            return response()->json(['message'=>$ex->getMessage(),'status'=>400,'error_code'=>$ex->getCode()],400);
+        }
     }
+
+
 
     /**
      * Display the specified resource.

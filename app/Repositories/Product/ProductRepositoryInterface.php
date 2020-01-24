@@ -6,7 +6,7 @@
  * Time: 13:07
  */
 
-namespace App\Repsitories\Product;
+namespace App\Repositories\Product;
 
 
 interface ProductRepositoryInterface
