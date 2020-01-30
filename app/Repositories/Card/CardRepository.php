@@ -10,6 +10,9 @@ namespace App\Repositories\Card;
 
 
 use App\Card;
+use App\Exceptions\DuplicateEntryException;
+use Illuminate\Database\QueryException;
+use Symfony\Component\HttpFoundation\Response;
 
 class CardRepository implements CardRepositoryInterface
 {

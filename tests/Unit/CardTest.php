@@ -17,6 +17,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class CardTest extends TestCase
 {
     private $testCreationData;
+    private $testProductCreationData;
     private $faker;
 
     /**
@@ -30,6 +31,11 @@ class CardTest extends TestCase
         $this->faker = \Faker\Factory::create();
         $this->testCreationData = [
             'title' => $this->faker->name,
+        ];
+
+        $this->testProductCreationData = [
+            'title' => $this->faker->name,
+            'price'=>$this->faker->numberBetween(1,1000)
         ];
 
 
@@ -68,6 +74,52 @@ class CardTest extends TestCase
 
 
     }
+
+
+    public function testCanUpdateACardWithNameThatExistBefore(){
+
+        $this->expectException(DuplicateEntryException::class);
+        $cardRepository = new CardRepository();
+        $cardService = new CardService($cardRepository);
+
+
+        $first_card = $cardService->create($this->testCreationData);
+        $second_card = $cardService->create(['title'=>'custom_title']);
+
+        $cardService->update(['title'=>'custom_title']);
+
+
+    }
+
+
+    public function testCanAddaProductToCard(){
+
+        $productRepostiroy = new ProductRepository();
+        $productService = new ProductService($productRepostiroy);
+        $createdProduct = $productService->create($this->testProductCreationData);
+
+
+        $cardRepository = new CardRepository();
+        $cardService = new CardService($cardRepository);
+
+        $card = $cardService->create($this->testCreationData);
+
+        $cardService->addProductToCard($card->id , $createdProduct->id);
+
+        $listOfProducts =  $cardService->listProductsInCard($card->id);
+
+
+        $this->assertEquals(count($listOfProducts) , 1);
+
+
+
+
+
+
+    }
+
+
+
 
 
 
