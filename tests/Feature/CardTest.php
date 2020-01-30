@@ -39,6 +39,7 @@ class CardTest extends TestCase
 
         $response = $this->post('/api/v1/card',
             $this->testCreationData);
+
         $response->assertStatus(201);
 
     }
