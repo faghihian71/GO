@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Api\ProductCard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CardResource;
+use App\Http\Resources\ProductCardResource;
 use App\Services\Card\CardServiceInterface;
-use \Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\Request;
 
 
@@ -23,9 +24,20 @@ class ProductCardController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index($cardID)
     {
-       //todo
+       list($paginatedItems , $totalSum) = $this->cardService->listProductsInCardWithTotalSum($cardID);
+
+        $cardResource = new ProductCardResource($paginatedItems);
+        $cardResource->additional(['meta' => [
+            'total_sum' => $totalSum,
+        ]]);
+
+        return $cardResource
+            ->response()
+            ->setStatusCode(Response::HTTP_CREATED);
+
+
     }
 
 
@@ -79,7 +91,8 @@ class ProductCardController extends Controller
     public function destroy($cardID , $productID)
     {
 
-
+        $this->cardService->removeProductFromCard($cardID,$productID);
+        return response()->json()->setStatusCode(Response::HTTP_OK);
 
     }
 

@@ -87,16 +87,7 @@ class CardRepository implements CardRepositoryInterface
         // Prevent Race Conditions of adding products
         DB::table('cards')->where('id', '=', $cardID)->lockForUpdate()->get();
 
-
-        if($findedCard->product->count() <=2) {
-            $findedCard->product()->detach($findedProduct->id);
-        }  else {
-
-            DB::rollBack();
-
-            throw new ExceedThresholdOfProductsInCardException(Card::ERROR_DICTIONARY[CARD::THRESHOLD_PRODUCT_ADD_ERR_CODE]
-                ,CARD::THRESHOLD_PRODUCT_ADD_ERR_CODE);
-        }
+        $findedCard->product()->detach($findedProduct->id);
 
         DB::commit();
 

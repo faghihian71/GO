@@ -80,7 +80,7 @@ class CardController extends Controller
     public function destroy($id)
     {
 
-        //todo
+
 
     }
 

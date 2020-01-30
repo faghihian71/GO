@@ -12,10 +12,12 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\Resource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class ProductResource extends Resource
+class ProductCardResource extends ResourceCollection
 {
-
-
+    private $totalSum = 0;
+    public function setTotalSum($totalSum){
+        $this->totalSum = $totalSum;
+    }
     /**
      * Transform the resource into an array.
      *
@@ -27,12 +29,11 @@ class ProductResource extends Resource
     {
 
         return [
-            'id' => $this->id,
-            'title' => $this->title,
-            'price' => $this->price . ' USD'
+            'data' => $this->collection,
+
+           // 'products'=> ProductResource::collection($this->product)
         ];
     }
-
 
 
 }
