@@ -83,21 +83,6 @@ class CardTest extends TestCase
     }
 
 
-    public function testCanUpdateACardWithNameThatExistBefore(){
-
-        $this->expectException(DuplicateEntryException::class);
-        $cardRepository = new CardRepository();
-        $cardService = new CardService($cardRepository);
-
-
-        $first_card = $cardService->create($this->testCreationData);
-        $second_card = $cardService->create(['title'=>'custom_title']);
-
-        $cardService->update(['title'=>'custom_title']);
-
-
-    }
-
 
     public function testCanAddaProductToCard(){
 
