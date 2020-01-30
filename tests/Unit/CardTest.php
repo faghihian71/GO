@@ -105,10 +105,7 @@ class CardTest extends TestCase
         $card = $cardService->create($this->testCreationData);
 
         $cardService->addProductToCard($card->id , $createdProduct->id);
-
         $listOfProducts =  $cardService->listProductsInCard($card->id);
-
-
         $this->assertEquals(count($listOfProducts) , 1);
 
 

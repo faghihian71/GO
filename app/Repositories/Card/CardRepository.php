@@ -11,11 +11,17 @@ namespace App\Repositories\Card;
 
 use App\Card;
 use App\Exceptions\DuplicateEntryException;
+use App\Exceptions\ExceedThresholdOfProductsInCardException;
+use App\Product;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class CardRepository implements CardRepositoryInterface
 {
+    const PRODUCTS_IN_CARD_THRESHOLD = 3;
+
     public function create($attributes)
     {
         try {
@@ -39,7 +45,32 @@ class CardRepository implements CardRepositoryInterface
 
     public function addProductToCard($cardID, $productID)
     {
-        // TODO: Implement addProductToCard() method.
+        $findedCard = Card::find($cardID);
+        if(!$findedCard){
+            throw new ModelNotFoundException();
+        }
+
+        $findedProduct = Product::find($productID);
+
+        DB::beginTransaction();
+
+        // Prevent Race Conditions of adding products
+        DB::table('cards')->where('id', '=', $cardID)->lockForUpdate()->get();
+
+
+        if($findedCard->product->count() <=2) {
+            $findedCard->product()->save($findedProduct);
+        }  else {
+
+            DB::rollBack();
+
+            throw new ExceedThresholdOfProductsInCardException(Card::ERROR_DICTIONARY[CARD::THRESHOLD_PRODUCT_ADD_ERR_CODE]
+            ,CARD::THRESHOLD_PRODUCT_ADD_ERR_CODE);
+        }
+
+        DB::commit();
+
+
     }
 
     public function removeProductFromCard($cardID, $productID)
@@ -49,7 +80,8 @@ class CardRepository implements CardRepositoryInterface
 
     public function listProductsInCard($cardID)
     {
-        // TODO: Implement listProductsInCard() method.
+        $findedCard = Card::find($cardID);
+        return $findedCard->product()->paginate(self::PRODUCTS_IN_CARD_THRESHOLD);
     }
 
 
