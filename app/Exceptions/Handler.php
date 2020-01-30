@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Dotenv\Exception\ValidationException;
 use Exception;
 use Illuminate\Contracts\Queue\EntityNotFoundException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -52,7 +53,7 @@ class Handler extends ExceptionHandler
         if ($request->ajax() || $request->wantsJson())
         {
             $json = [
-                'error' => [
+                'errors' => [
                     'code' => $exception->getCode(),
                     'message' => $exception->getMessage(),
                 ],
@@ -71,6 +72,10 @@ class Handler extends ExceptionHandler
                 case ExceedThresholdOfProductsInCardException::class:
                     $status_code = Response::HTTP_BAD_REQUEST;
                     break;
+                case  ValidationException::class:
+                    return parent::render($request, $exception);
+                default:
+                    return parent::render($request, $exception);
 
 
             }

@@ -29,9 +29,13 @@ class ProductCardResource extends ResourceCollection
     {
 
         return [
-            'data' => $this->collection,
-
-           // 'products'=> ProductResource::collection($this->product)
+            'data' => $this->collection->transform(function($page){
+                return [
+                    'id' => $page->id,
+                    'title' => $page->title,
+                    'price' => $page->price . ' USD',
+                ];
+            }),
         ];
     }
 

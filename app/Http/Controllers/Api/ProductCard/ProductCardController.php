@@ -30,7 +30,7 @@ class ProductCardController extends Controller
 
         $cardResource = new ProductCardResource($paginatedItems);
         $cardResource->additional(['meta' => [
-            'total_sum' => $totalSum,
+            'total_sum' => $totalSum . ' USD',
         ]]);
 
         return $cardResource
@@ -90,10 +90,8 @@ class ProductCardController extends Controller
      */
     public function destroy($cardID , $productID)
     {
-
         $this->cardService->removeProductFromCard($cardID,$productID);
         return response()->json()->setStatusCode(Response::HTTP_OK);
-
     }
 
 

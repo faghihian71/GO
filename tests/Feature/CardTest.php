@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CardTest extends TestCase
 {
+    use RefreshDatabase;
     private $testCreationData;
     private $testCreationDataForProduct;
     private $faker;

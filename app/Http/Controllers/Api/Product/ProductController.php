@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Product;
 
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Services\Product\ProductServiceInterface;
 use \Illuminate\Http\Response;
@@ -36,7 +37,7 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
 
             $createdProduct = $this->productService->create($request->toArray());
@@ -67,7 +68,7 @@ class ProductController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ProductRequest $request, $id)
     {
 
         $updatedProdcut = $this->productService->update($id, $request->toArray());

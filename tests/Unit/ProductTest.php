@@ -14,6 +14,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProductTest extends TestCase
 {
+    use RefreshDatabase;
+
     private $testCreationData;
     private $faker;
 
