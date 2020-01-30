@@ -20,7 +20,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::group(['prefix' => 'v1'], function() {
 
-    Route::Resource('product','Api\Product\ProductController');
     Route::Resource('card','Api\Card\CardController');
+    Route::Resource('product','Api\Product\ProductController');
+
+
+    // Relation Routes
+    Route::Resource('card.product','Api\ProductCard\ProductCardController');
 
 });

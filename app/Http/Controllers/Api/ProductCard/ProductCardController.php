@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Http\Controllers\Api\Product;
-
+namespace App\Http\Controllers\Api\ProductCard;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ProductResource;
-use App\Services\Product\ProductServiceInterface;
+use App\Http\Resources\CardResource;
+use App\Services\Card\CardServiceInterface;
 use \Illuminate\Http\Response;
 use Illuminate\Http\Request;
 
-class ProductController extends Controller
-{
-    private $productService = null;
 
-    public function __construct(ProductServiceInterface $productService)
+class ProductCardController extends Controller
+{
+    private $cardService = null;
+
+    public function __construct(CardServiceInterface $cardService)
     {
-        $this->productService = $productService;
+        $this->cardService = $cardService;
     }
 
     /**
@@ -25,8 +25,7 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $products = $this->productService->list(null, 3, null);
-        return ProductResource::collection($products);
+       //todo
     }
 
 
@@ -36,13 +35,12 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request , $cardId)
     {
 
-            $createdProduct = $this->productService->create($request->toArray());
-            return (new ProductResource($createdProduct))
-                ->response()
-                ->setStatusCode(Response::HTTP_CREATED);
+            $productId = $request->get('id');
+            $createdCard = $this->cardService->addProductToCard($cardId,$productId);
+            return response()->json()->setStatusCode(Response::HTTP_OK);
 
 
     }
@@ -69,10 +67,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-
-        $updatedProdcut = $this->productService->update($id, $request->toArray());
-        return (new ProductResource($updatedProdcut));
-
+        //
     }
 
     /**
@@ -81,10 +76,10 @@ class ProductController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($cardID , $productID)
     {
 
-        $this->productService->remove($id);
+
 
     }
 

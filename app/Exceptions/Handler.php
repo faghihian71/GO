@@ -68,6 +68,9 @@ class Handler extends ExceptionHandler
                 case DuplicateEntryException::class:
                     $status_code = Response::HTTP_CONFLICT;
                     break;
+                case ExceedThresholdOfProductsInCardException::class:
+                    $status_code = Response::HTTP_BAD_REQUEST;
+                    break;
 
 
             }

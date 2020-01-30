@@ -26,6 +26,7 @@ class CardService implements CardServiceInterface
 
     public function addProductToCard($cardID, $productID)
     {
+        // Check with Lock In repository for race Condition in adding product to Card
         return $this->cardRepository->addProductToCard($cardID,$productID);
     }
 
