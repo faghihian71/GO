@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 
 use App\Exceptions\DuplicateEntryException;
+use App\Exceptions\ExceedThresholdOfProductsInCardException;
 use App\Product;
 use App\Repositories\Card\CardRepository;
 use App\Repositories\Product\ProductRepository;
@@ -33,12 +34,17 @@ class CardTest extends TestCase
             'title' => $this->faker->name,
         ];
 
-        $this->testProductCreationData = [
+        $this->testProductCreationData = $this->makeNewFakeProduct();
+
+
+    }
+
+    public function makeNewFakeProduct(){
+
+        return [
             'title' => $this->faker->name,
             'price'=>$this->faker->numberBetween(1,1000)
         ];
-
-
     }
 
     /**
@@ -109,11 +115,38 @@ class CardTest extends TestCase
         $this->assertEquals(count($listOfProducts) , 1);
 
 
+    }
+    public function testIsNotPossibleAddMoreThanThresholdProduct(){
+
+        $this->expectException(ExceedThresholdOfProductsInCardException::class);
+
+        $productRepostiroy = new ProductRepository();
+        $productService = new ProductService($productRepostiroy);
 
 
+        $firstProduct = $productService->create($this->makeNewFakeProduct());
+        $secondProduct = $productService->create($this->makeNewFakeProduct());
+        $thirdProduct = $productService->create($this->makeNewFakeProduct());
+        $fourthProduct = $productService->create($this->makeNewFakeProduct());
+
+
+        $cardRepository = new CardRepository();
+        $cardService = new CardService($cardRepository);
+
+        $card = $cardService->create($this->testCreationData);
+
+        $cardService->addProductToCard($card->id , $firstProduct->id);
+        $cardService->addProductToCard($card->id , $secondProduct->id);
+        $cardService->addProductToCard($card->id , $thirdProduct->id);
+        $cardService->addProductToCard($card->id , $fourthProduct->id);
+
+        $listOfProducts =  $cardService->listProductsInCard($card->id);
+        $this->assertEquals(count($listOfProducts) , 1);
 
 
     }
+
+
 
 
 
