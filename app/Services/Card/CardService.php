@@ -34,9 +34,12 @@ class CardService implements CardServiceInterface
         return $this->cardRepository->removeProductFromCard($cardID,$productID);
     }
 
-    public function listProductsInCard($cardID)
+    public function listProductsInCardWithTotalSum($cardID)
     {
-        return $this->cardRepository->listProductsInCard($cardID);
+        $products =  $this->cardRepository->listProductsInCard($cardID);
+        $totalSum = $this->cardRepository->getTotalSumOfProductsInCard($cardID);
+
+        return array($products , $totalSum);
     }
 
 

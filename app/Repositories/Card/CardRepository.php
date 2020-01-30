@@ -45,12 +45,12 @@ class CardRepository implements CardRepositoryInterface
 
     public function addProductToCard($cardID, $productID)
     {
-        $findedCard = Card::find($cardID);
+        $findedCard = Card::findOrFail($cardID);
         if(!$findedCard){
             throw new ModelNotFoundException();
         }
 
-        $findedProduct = Product::find($productID);
+        $findedProduct = Product::findOrFail($productID);
 
         DB::beginTransaction();
 
@@ -75,14 +75,45 @@ class CardRepository implements CardRepositoryInterface
 
     public function removeProductFromCard($cardID, $productID)
     {
-        // TODO: Implement removeProductFromCard() method.
+        $findedCard = Card::findOrFail($cardID);
+        if(!$findedCard){
+            throw new ModelNotFoundException();
+        }
+
+        $findedProduct = Product::findOrFail($productID);
+
+        DB::beginTransaction();
+
+        // Prevent Race Conditions of adding products
+        DB::table('cards')->where('id', '=', $cardID)->lockForUpdate()->get();
+
+
+        if($findedCard->product->count() <=2) {
+            $findedCard->product()->detach($findedProduct->id);
+        }  else {
+
+            DB::rollBack();
+
+            throw new ExceedThresholdOfProductsInCardException(Card::ERROR_DICTIONARY[CARD::THRESHOLD_PRODUCT_ADD_ERR_CODE]
+                ,CARD::THRESHOLD_PRODUCT_ADD_ERR_CODE);
+        }
+
+        DB::commit();
+
     }
 
     public function listProductsInCard($cardID)
     {
-        $findedCard = Card::find($cardID);
+        $findedCard = Card::findOrFail($cardID);
         return $findedCard->product()->paginate(self::PRODUCTS_IN_CARD_THRESHOLD);
     }
+
+
+    public function getTotalSumOfProductsInCard($cardID){
+         return Card::findOrFail($cardID)->product()->sum('price');
+    }
+
+
 
 
 }

@@ -111,8 +111,8 @@ class CardTest extends TestCase
         $card = $cardService->create($this->testCreationData);
 
         $cardService->addProductToCard($card->id , $createdProduct->id);
-        $listOfProducts =  $cardService->listProductsInCard($card->id);
-        $this->assertEquals(count($listOfProducts) , 1);
+        $listOfProducts =  $cardService->listProductsInCardWithTotalSum($card->id);
+        $this->assertEquals(1, count($listOfProducts[0]) );
 
 
     }
@@ -141,7 +141,60 @@ class CardTest extends TestCase
         $cardService->addProductToCard($card->id , $fourthProduct->id);
 
         $listOfProducts =  $cardService->listProductsInCard($card->id);
-        $this->assertEquals(count($listOfProducts) , 1);
+        $this->assertEquals(1 , count($listOfProducts[0]));
+
+
+    }
+
+    public function testRemoveAProductFromACard(){
+
+        $productRepostiroy = new ProductRepository();
+        $productService = new ProductService($productRepostiroy);
+        $createdProduct = $productService->create($this->testProductCreationData);
+
+
+        $cardRepository = new CardRepository();
+        $cardService = new CardService($cardRepository);
+
+        $card = $cardService->create($this->testCreationData);
+
+        $cardService->addProductToCard($card->id , $createdProduct->id);
+        $cardService->removeProductFromCard($card->id ,$createdProduct->id);
+
+        $listOfProducts =  $cardService->listProductsInCardWithTotalSum($card->id);
+        $this->assertEquals(0 , count($listOfProducts[0]));
+
+
+
+    }
+
+    public function testIsSumOfProductsCorrect(){
+
+        $productRepostiroy = new ProductRepository();
+        $productService = new ProductService($productRepostiroy);
+
+
+        $firstProduct = $productService->create($this->makeNewFakeProduct());
+        $secondProduct = $productService->create($this->makeNewFakeProduct());
+        $thirdProduct = $productService->create($this->makeNewFakeProduct());
+        $fourthProduct = $productService->create($this->makeNewFakeProduct());
+
+
+        $cardRepository = new CardRepository();
+        $cardService = new CardService($cardRepository);
+
+        $card = $cardService->create($this->testCreationData);
+
+        $cardService->addProductToCard($card->id , $firstProduct->id);
+        $cardService->addProductToCard($card->id , $secondProduct->id);
+        $cardService->addProductToCard($card->id , $thirdProduct->id);
+
+        $expectedSum = $firstProduct->price + $secondProduct->price + $thirdProduct->price;
+
+        //
+        $listOfProducts =  $cardService->listProductsInCardWithTotalSum($card->id);
+        $totalSum = $listOfProducts[1];
+        $this->assertEquals($expectedSum , $listOfProducts[1]);
 
 
     }

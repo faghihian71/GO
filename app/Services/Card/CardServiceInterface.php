@@ -17,5 +17,5 @@ interface CardServiceInterface
 
     public function removeProductFromCard($cardID , $productID);
 
-    public function listProductsInCard($cardID);
+    public function listProductsInCardWithTotalSum($cardID);
 }
