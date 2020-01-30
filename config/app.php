@@ -178,7 +178,9 @@ return [
         /*
          *  Application Logic Providers
          */
-        App\Providers\ProductServiceProvider::class
+        App\Providers\ProductServiceProvider::class,
+        App\Providers\CardServiceProvider::class
+
 
     ],
 

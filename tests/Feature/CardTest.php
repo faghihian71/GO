@@ -11,16 +11,7 @@ class CardTest extends TestCase
 {
     private $testCreationData;
     private $faker;
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
-    public function testBasicTest()
-    {
-        $response = $this->get('/');
-        $response->assertStatus(200);
-    }
+
 
     public function  setUp()
     {
@@ -39,9 +30,10 @@ class CardTest extends TestCase
 
         $response = $this->post('/api/v1/card',
             $this->testCreationData);
-
         $response->assertStatus(201);
 
     }
+
+
 
 }
